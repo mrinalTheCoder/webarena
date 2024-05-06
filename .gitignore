@@ -138,12 +138,14 @@ dmypy.json
 
 # local debug
 run.sh
+url.sh
 
 # trajectory visualization
 render_cache/*
 cache/*
 
 # TMP IGNORE
+results
 agent/prompts/jsons/*
 log_files/
 config_files*/*0.json

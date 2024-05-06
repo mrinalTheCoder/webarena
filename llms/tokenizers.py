@@ -14,8 +14,8 @@ class Tokenizer(object):
             self.tokenizer.add_special_tokens = False  # type: ignore[attr-defined]
             self.tokenizer.add_bos_token = False  # type: ignore[attr-defined]
             self.tokenizer.add_eos_token = False  # type: ignore[attr-defined]
-        else:
-            raise NotImplementedError
+        # else:
+        #     raise NotImplementedError
 
     def encode(self, text: str) -> list[int]:
         return self.tokenizer.encode(text)

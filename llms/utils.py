@@ -7,6 +7,7 @@ from llms import (
     generate_from_openai_completion,
     lm_config,
 )
+from llms.providers.gemini_utils import generate_from_gemini_completion
 
 APIInput = str | list[Any] | dict[str, Any]
 
@@ -47,6 +48,16 @@ def call_llm(
         response = generate_from_huggingface_completion(
             prompt=prompt,
             model_endpoint=lm_config.gen_config["model_endpoint"],
+            temperature=lm_config.gen_config["temperature"],
+            top_p=lm_config.gen_config["top_p"],
+            stop_sequences=lm_config.gen_config["stop_sequences"],
+            max_new_tokens=lm_config.gen_config["max_new_tokens"],
+        )
+    elif lm_config.provider == "gemini":
+        assert isinstance(prompt, str)
+        response = generate_from_gemini_completion(
+            prompt=prompt,
+            model=lm_config.model,
             temperature=lm_config.gen_config["temperature"],
             top_p=lm_config.gen_config["top_p"],
             stop_sequences=lm_config.gen_config["stop_sequences"],

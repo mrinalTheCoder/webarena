@@ -75,6 +75,19 @@ class PromptConstructor(object):
                 raise ValueError(
                     f"OpenAI models do not support mode {self.lm_config.mode}"
                 )
+        elif "gemini" in self.lm_config.provider:
+            if self.lm_config.mode == "chat":
+                raise NotImplementedError("chat not implemented for gemini")
+            elif self.lm_config.mode == "completion":
+                message = f"{intro}\n\n"
+                message += "Here are a few examples:\n"
+                for example in examples:
+                    message += f"Observation\n:{example[0]}\n\n"
+                    message += f"Action: {example[1]}\n\n"
+                message += "Now make prediction given the observation\n\n"
+                message += f"Observation\n:{current}\n\n"
+                message += "Action:"
+                return message
         elif "huggingface" in self.lm_config.provider:
             # https://huggingface.co/blog/llama2#how-to-prompt-llama-2
             # https://github.com/facebookresearch/llama/blob/main/llama/generation.py#L320
@@ -171,7 +184,7 @@ class DirectPromptConstructor(PromptConstructor):
 
         obs = state_info["observation"][self.obs_modality]
         max_obs_length = self.lm_config.gen_config["max_obs_length"]
-        if max_obs_length:
+        if max_obs_length and self.tokenizer != None:
             obs = self.tokenizer.decode(self.tokenizer.encode(obs)[:max_obs_length])  # type: ignore[arg-type]
 
         page = state_info["info"]["page"]
@@ -229,7 +242,7 @@ class CoTPromptConstructor(PromptConstructor):
 
         obs = state_info["observation"][self.obs_modality]
         max_obs_length = self.lm_config.gen_config["max_obs_length"]
-        if max_obs_length:
+        if max_obs_length and self.tokenizer != None:
             obs = self.tokenizer.decode(self.tokenizer.encode(obs)[:max_obs_length])  # type: ignore[arg-type]
 
         page = state_info["info"]["page"]

@@ -166,7 +166,11 @@ def construct_agent(args: argparse.Namespace) -> Agent:
     elif args.agent_type == "prompt":
         with open(args.instruction_path) as f:
             constructor_type = json.load(f)["meta_data"]["prompt_constructor"]
-        tokenizer = Tokenizer(args.provider, args.model)
+        tokenizer = (
+            Tokenizer(args.provider, args.model)
+            if args.provider != "gemini"
+            else None
+        )
         prompt_constructor = eval(constructor_type)(
             args.instruction_path, lm_config=llm_config, tokenizer=tokenizer
         )
